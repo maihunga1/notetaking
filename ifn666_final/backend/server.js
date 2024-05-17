@@ -82,6 +82,91 @@ app.post("/register", (req, res) => {
   );
 });
 
+// GET all todos
+// app.get("/todos", (req, res) => {
+//   db.query("SELECT * FROM todos", (err, results) => {
+//     if (err) {
+//       console.error("error running query:", err);
+//       res.status(500).send({ message: "Error fetching todos" });
+//     } else {
+//       res.send(results);
+//     }
+//   });
+// });
+app.get("/todos", (req, res) => {
+  db.query("SELECT * FROM todos", (err, result) => {
+    if (err) {
+      console.error("Error: ", err);
+      res.status(500).send({ message: "Error fetching todos" });
+    } else {
+      res.status(200).send(result);
+    }
+  });
+});
+
+// POST a new todo
+app.post("/todos", (req, res) => {
+  const { title, description } = req.body;
+  db.query(
+    "INSERT INTO todos (title, description) VALUES (?, ?)",
+    [title, description],
+    (err, _results) => {
+      if (err) {
+        console.error("error running query:", err);
+        res.status(500).send({ message: "Error creating todo" });
+      } else {
+        res.send({ message: "Todo created successfully" });
+      }
+    }
+  );
+});
+
+// GET a single todo by id
+app.get("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  db.query("SELECT * FROM todos WHERE id = ?", [id], (err, results) => {
+    if (err) {
+      console.error("error running query:", err);
+      res.status(500).send({ message: "Error fetching todo" });
+    } else if (results.length === 0) {
+      res.status(404).send({ message: "Todo not found" });
+    } else {
+      res.send(results[0]);
+    }
+  });
+});
+
+// UPDATE a todo
+app.put("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  const { title, description } = req.body;
+  db.query(
+    "UPDATE todos SET title = ?, description = ? WHERE id = ?",
+    [title, description, id],
+    (err, _results) => {
+      if (err) {
+        console.error("error running query:", err);
+        res.status(500).send({ message: "Error updating todo" });
+      } else {
+        res.send({ message: "Todo updated successfully" });
+      }
+    }
+  );
+});
+
+// DELETE a todo
+app.delete("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  db.query("DELETE FROM todos WHERE id = ?", [id], (err, _results) => {
+    if (err) {
+      console.error("error running query:", err);
+      res.status(500).send({ message: "Error deleting todo" });
+    } else {
+      res.send({ message: "Todo deleted successfully" });
+    }
+  });
+});
+
 // Start server
 const port = 3000;
 app.listen(port, () => {
