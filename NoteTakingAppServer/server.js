@@ -1,9 +1,21 @@
 import express from "express";
 import { createConnection } from "mysql";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
+import cors from "cors";
+
+const STATUS = {
+  ERROR: "Error",
+  SUCCESS: "Success"
+}
 
 const app = express();
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 const db = createConnection({
   host: "127.0.0.1",
@@ -53,12 +65,12 @@ app.post("/login", (req, res) => {
       const isValid = compareSync(password, storedPassword);
 
       if (!isValid) {
-        res.status(401).send({ message: "Invalid username or password" });
+        res.status(401).send({ message: "Invalid username or password", status: STATUS.ERROR });
 
         return;
       }
 
-      res.status(200).send({ message: "Logged in successfully" });
+      res.status(200).send({ message: "Logged in successfully", status: STATUS.SUCCESS });
     }
   );
 });
@@ -86,9 +98,9 @@ app.get("/todos", (req, res) => {
   db.query("SELECT * FROM todos", (err, result) => {
     if (err) {
       console.error("Error: ", err);
-      res.status(500).send({ message: "Error fetching todos" });
+      res.status(500).send({ message: "Error fetching todos", status: STATUS.ERROR });
     } else {
-      res.status(200).send(result);
+      res.status(200).send({ data: result, status: STATUS.SUCCESS });
     }
   });
 });
@@ -102,9 +114,9 @@ app.post("/todos", (req, res) => {
     (err, _results) => {
       if (err) {
         console.error("error running query:", err);
-        res.status(500).send({ message: "Error creating todo" });
+        res.status(500).send({ message: "Error creating todo", status: STATUS.ERROR });
       } else {
-        res.send({ message: "Todo created successfully" });
+        res.send({ message: "Todo created successfully", status: STATUS.SUCCESS, result: _results });
       }
     }
   );

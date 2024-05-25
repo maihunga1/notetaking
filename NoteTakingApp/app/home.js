@@ -1,44 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, TextInput, Button, FlatList, Alert } from "react-native";
 import { getTodos, addTodo } from "./api.js";
+import { STATUS } from "./constant.js";
 
 function Home() {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  useEffect(() => {
-    fetchTodos();
-  }, []);
-
-  const fetchTodos = async () => {
+  const fetchTodos = useCallback(async () => {
     try {
       const response = await getTodos();
-      if (!response.ok) {
+      if (response.status === STATUS.ERROR) {
         throw new Error("Failed to fetch todos");
       }
-      const jsonData = await response.json();
-      setTodos(jsonData);
+      setTodos(response.data);
     } catch (error) {
       console.error("Error fetching todos:", error);
       Alert.alert("Error", "Failed to fetch todos");
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]);
 
   const handleAddTodo = async () => {
     try {
       const response = await addTodo(title, description);
-      if (!response.ok) {
+      if (response.status === STATUS.ERROR) {
         throw new Error("Failed to create todo");
       }
-      const jsonData = await response.json();
-      if (jsonData.message === "Todo created successfully") {
+      if (response.message === "Todo created successfully") {
         Alert.alert("Success", "Todo created successfully");
-        fetchTodos();
+        setTodos((prev) => {
+          return [
+            ...prev,
+            { title, description, id: response.result.insertId },
+          ];
+        });
         setTitle("");
         setDescription("");
       } else {
-        Alert.alert("Error", jsonData.message);
+        Alert.alert("Error", response.message);
       }
     } catch (error) {
       console.error("Error creating todo:", error);

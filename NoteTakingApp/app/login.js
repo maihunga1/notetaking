@@ -14,7 +14,7 @@ import {
 import { loginUser, registerUser } from "./api.js";
 import logo from "../assets/images/logo.png";
 
-function Login() {
+function Login({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -26,8 +26,7 @@ function Login() {
     }
     try {
       const response = await loginUser(username, password);
-      if (response.success) {
-        Alert.alert("Login Successful!");
+      if (response.status === "Success") {
         navigation.navigate("Home");
       } else {
         setError(response.message);
@@ -37,22 +36,22 @@ function Login() {
     }
   };
 
-  const handleRegister = async () => {
-    if (username === "" || password === "") {
-      setError("Please enter username and password");
-      return;
-    }
-    try {
-      const response = await registerUser(username, password);
-      if (response.success) {
-        Alert.alert("Registration Successful!");
-      } else {
-        setError(response.message);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-  };
+  // const handleRegister = async () => {
+  //   if (username === "" || password === "") {
+  //     setError("Please enter username and password");
+  //     return;
+  //   }
+  //   try {
+  //     const response = await registerUser(username, password);
+  //     if (response.success) {
+  //       Alert.alert("Registration Successful!");
+  //     } else {
+  //       setError(response.message);
+  //     }
+  //   } catch (error) {
+  //     setError(error.message);
+  //   }
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -86,7 +85,7 @@ function Login() {
 
       <Text style={styles.footerText}>
         Don't Have Account?
-        <Pressable onPress={handleRegister}>
+        <Pressable onPress={() => navigation.navigate("Signup")}>
           <Text style={styles.signup}> Sign Up</Text>
         </Pressable>
       </Text>

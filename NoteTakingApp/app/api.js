@@ -1,14 +1,16 @@
-const API_URL = "http://localhost:3000";
+import { STATUS } from "./constant";
+
+export const API_URL = "http://localhost:3000";
 
 export const loginUser = async (username, password) => {
-  const response = await fetch(`${API_URL}/login`, {
+  const response = await fetch(`http://localhost:3000/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ username, password }),
   });
-  return response.json();
+  return await response.json();
 };
 
 export const registerUser = async (username, password) => {
@@ -19,7 +21,7 @@ export const registerUser = async (username, password) => {
     },
     body: JSON.stringify({ username, password }),
   });
-  return response.json();
+  return await response.json();
 };
 
 export const getTodos = async () => {
@@ -27,7 +29,7 @@ export const getTodos = async () => {
   if (!response.ok) {
     throw new Error("Failed to fetch todos");
   }
-  return response.json();
+  return await response.json();
 };
 
 export const addTodo = async (title, description) => {
@@ -42,5 +44,5 @@ export const addTodo = async (title, description) => {
   if (!response.ok) {
     throw new Error("Failed to create todo");
   }
-  return response.json();
+  return await response.json();
 };
