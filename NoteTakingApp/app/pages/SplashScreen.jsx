@@ -3,9 +3,13 @@ import { View, Text, StyleSheet } from "react-native";
 
 export default function SplashScreen({ navigation }) {
   useEffect(() => {
-    setTimeout(() => {
+    const id = setTimeout(() => {
       navigation.replace("Login");
     }, 2000);
+
+    return () => {
+      if (id) clearTimeout(id);
+    };
   }, [navigation]);
 
   return (

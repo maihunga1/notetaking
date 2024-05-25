@@ -1,5 +1,3 @@
-import { STATUS } from "./constant";
-
 export const API_URL = "http://localhost:3000";
 
 export const loginUser = async (username, password) => {
@@ -44,5 +42,38 @@ export const addTodo = async (title, description) => {
   if (!response.ok) {
     throw new Error("Failed to create todo");
   }
+  return await response.json();
+};
+
+export const editTodo = async (id, title, description) => {
+  const response = await fetch(`${API_URL}/todos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ title, description }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to edit todo");
+  }
+  return await response.json();
+};
+
+export const deleteTodo = async (id, title, description) => {
+  const response = await fetch(`${API_URL}/todos/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ title, description }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete todo");
+  }
+
+  console.log(response)
+
   return await response.json();
 };

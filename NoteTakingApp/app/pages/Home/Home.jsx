@@ -1,9 +1,18 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, TextInput, Button, FlatList, Alert } from "react-native";
-import { getTodos, addTodo } from "./api.js";
-import { STATUS } from "./constant.js";
+import React, { useState, useEffect, useCallback, memo } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  Alert,
+  StyleSheet,
+} from "react-native";
+import { getTodos, addTodo } from "../../api.js";
+import { STATUS } from "../../constant.js";
+import Note from "./components/Note.jsx";
 
-function Home() {
+export default memo(function Home() {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -19,13 +28,13 @@ function Home() {
       console.error("Error fetching todos:", error);
       Alert.alert("Error", "Failed to fetch todos");
     }
-  }, []);
+  }, [getTodos]);
 
   useEffect(() => {
     fetchTodos();
   }, [fetchTodos]);
 
-  const handleAddTodo = async () => {
+  const handleAddTodo = useCallback(async () => {
     try {
       const response = await addTodo(title, description);
       if (response.status === STATUS.ERROR) {
@@ -48,42 +57,43 @@ function Home() {
       console.error("Error creating todo:", error);
       Alert.alert("Error", "Failed to create todo");
     }
-  };
+  }, [title, description, addTodo]);
+
+  const renderItem = useCallback(({ item }) => {
+    return <Note item={item} setTodos={setTodos}/>;
+  }, []);
+
+  const keyExtractor = useCallback((item) => {
+    return item.id;
+  }, []);
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 24, marginBottom: 16 }}>Notes</Text>
+    <View style={style.container}>
+      <Text style={style.title}>Notes</Text>
       <FlatList
         data={todos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View
-            style={{
-              padding: 8,
-              borderBottomWidth: 1,
-              borderBottomColor: "#ccc",
-            }}
-          >
-            <Text style={{ fontSize: 18 }}>{item.title}</Text>
-            <Text>{item.description}</Text>
-          </View>
-        )}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
       />
       <TextInput
         placeholder="Title"
         value={title}
         onChangeText={setTitle}
-        style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}
+        style={style.textInput}
       />
       <TextInput
         placeholder="Description"
         value={description}
         onChangeText={setDescription}
-        style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}
+        style={style.textInput}
       />
       <Button title="Add Note" onPress={handleAddTodo} />
     </View>
   );
-}
+});
 
-export default Home;
+const style = StyleSheet.create({
+  container: { flex: 1, padding: 16 },
+  title: { fontSize: 24, marginBottom: 16 },
+  textInput: { borderWidth: 1, marginBottom: 8, padding: 8 },
+});

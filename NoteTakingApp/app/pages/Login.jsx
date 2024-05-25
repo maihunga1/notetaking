@@ -11,8 +11,8 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { loginUser, registerUser } from "./api.js";
-import logo from "../assets/images/logo.png";
+import { loginUser, registerUser } from "../api.js";
+import logo from "../../assets/images/logo.png";
 
 function Login({ navigation }) {
   const [username, setUsername] = useState("");

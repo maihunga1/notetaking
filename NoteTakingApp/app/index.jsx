@@ -1,10 +1,10 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import SplashScreen from "./SplashScreen.js";
-import Login from "./login.js";
-import SignupScreen from "./RegisterScreen.js";
-import Home from "./home.js";
+import SplashScreen from "./pages/SplashScreen.jsx";
+import Login from "./pages/Login.jsx";
+import SignupScreen from "./pages/RegisterScreen.jsx";
+import Home from "./pages/Home/Home.jsx";
 // import AboutScreen from "./About";
 // import SettingsScreen from "./Settings";
 

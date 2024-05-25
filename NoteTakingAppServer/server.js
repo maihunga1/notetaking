@@ -5,8 +5,8 @@ import cors from "cors";
 
 const STATUS = {
   ERROR: "Error",
-  SUCCESS: "Success"
-}
+  SUCCESS: "Success",
+};
 
 const app = express();
 app.use(express.json());
@@ -65,12 +65,17 @@ app.post("/login", (req, res) => {
       const isValid = compareSync(password, storedPassword);
 
       if (!isValid) {
-        res.status(401).send({ message: "Invalid username or password", status: STATUS.ERROR });
+        res.status(401).send({
+          message: "Invalid username or password",
+          status: STATUS.ERROR,
+        });
 
         return;
       }
 
-      res.status(200).send({ message: "Logged in successfully", status: STATUS.SUCCESS });
+      res
+        .status(200)
+        .send({ message: "Logged in successfully", status: STATUS.SUCCESS });
     }
   );
 });
@@ -98,7 +103,9 @@ app.get("/todos", (req, res) => {
   db.query("SELECT * FROM todos", (err, result) => {
     if (err) {
       console.error("Error: ", err);
-      res.status(500).send({ message: "Error fetching todos", status: STATUS.ERROR });
+      res
+        .status(500)
+        .send({ message: "Error fetching todos", status: STATUS.ERROR });
     } else {
       res.status(200).send({ data: result, status: STATUS.SUCCESS });
     }
@@ -114,9 +121,15 @@ app.post("/todos", (req, res) => {
     (err, _results) => {
       if (err) {
         console.error("error running query:", err);
-        res.status(500).send({ message: "Error creating todo", status: STATUS.ERROR });
+        res
+          .status(500)
+          .send({ message: "Error creating todo", status: STATUS.ERROR });
       } else {
-        res.send({ message: "Todo created successfully", status: STATUS.SUCCESS, result: _results });
+        res.send({
+          message: "Todo created successfully",
+          status: STATUS.SUCCESS,
+          result: _results,
+        });
       }
     }
   );
@@ -144,12 +157,12 @@ app.put("/todos/:id", (req, res) => {
   db.query(
     "UPDATE todos SET title = ?, description = ? WHERE id = ?",
     [title, description, id],
-    (err, _results) => {
+    (err, results) => {
       if (err) {
         console.error("error running query:", err);
         res.status(500).send({ message: "Error updating todo" });
       } else {
-        res.send({ message: "Todo updated successfully" });
+        res.send({ message: "Todo updated successfully", results, status: STATUS.SUCCESS });
       }
     }
   );
@@ -158,12 +171,12 @@ app.put("/todos/:id", (req, res) => {
 // DELETE a todo
 app.delete("/todos/:id", (req, res) => {
   const id = req.params.id;
-  db.query("DELETE FROM todos WHERE id = ?", [id], (err, _results) => {
+  db.query("DELETE FROM todos WHERE id = ?", [id], (err, results) => {
     if (err) {
       console.error("error running query:", err);
       res.status(500).send({ message: "Error deleting todo" });
     } else {
-      res.send({ message: "Todo deleted successfully" });
+      res.send({ message: "Todo deleted successfully", results, status: STATUS.SUCCESS });
     }
   });
 });
