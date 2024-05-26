@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   LoginScreen,
   RegisterScreen,
@@ -15,7 +16,7 @@ import {
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
-const BottomTabNavigator = () => (
+const BottomTabNavigator = ({ fontSize, setFontSize }) => (
   <BottomTab.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
@@ -45,25 +46,25 @@ const BottomTabNavigator = () => (
       inactiveTintColor: "gray",
     }}
   >
-    <BottomTab.Screen
-      name="Home"
-      component={HomeScreen}
-      options={{ headerShown: false }}
-    />
-    <BottomTab.Screen
-      name="About"
-      component={AboutScreen}
-      options={{ headerShown: false }}
-    />
-    <BottomTab.Screen
-      name="Settings"
-      component={SettingScreen}
-      options={{ headerShown: false }}
-    />
+    <BottomTab.Screen name="Home" options={{ headerShown: false }}>
+      {(props) => <HomeScreen {...props} fontSize={fontSize} />}
+    </BottomTab.Screen>
+    <BottomTab.Screen name="About" options={{ headerShown: false }}>
+      {(props) => <AboutScreen {...props} fontSize={fontSize} />}
+    </BottomTab.Screen>
+    <BottomTab.Screen name="Settings" options={{ headerShown: false }}>
+      {(props) => (
+        <SettingScreen
+          {...props}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+        />
+      )}
+    </BottomTab.Screen>
   </BottomTab.Navigator>
 );
 
-const RootNavigator = () => (
+const RootNavigator = ({ fontSize, setFontSize }) => (
   <Stack.Navigator initialRouteName="Login">
     <Stack.Screen
       name="Login"
@@ -75,18 +76,48 @@ const RootNavigator = () => (
       component={RegisterScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen
-      name="BottomTab"
-      component={BottomTabNavigator}
-      options={{ headerShown: false }}
-    />
+    <Stack.Screen name="BottomTab" options={{ headerShown: false }}>
+      {(props) => (
+        <BottomTabNavigator
+          {...props}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+        />
+      )}
+    </Stack.Screen>
   </Stack.Navigator>
 );
 
 export default function Index() {
+  const [fontSize, setFontSize] = useState("medium");
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const savedFontSize = await AsyncStorage.getItem("fontSize");
+        if (savedFontSize) {
+          setFontSize(savedFontSize);
+        }
+      } catch (e) {
+        console.error("Failed to load settings.", e);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  const saveFontSize = async (newFontSize) => {
+    try {
+      await AsyncStorage.setItem("fontSize", newFontSize);
+      setFontSize(newFontSize);
+    } catch (e) {
+      console.error("Failed to save settings.", e);
+    }
+  };
+
   return (
     <NavigationContainer independent={true}>
-      <RootNavigator />
+      <RootNavigator fontSize={fontSize} setFontSize={saveFontSize} />
     </NavigationContainer>
   );
 }

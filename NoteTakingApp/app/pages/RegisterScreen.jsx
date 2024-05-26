@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import { View, TextInput, Button, StyleSheet, Alert, Text } from "react-native";
+import { registerUser } from "../api";
 
 export default function RegisterScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
   const handleRegister = async () => {
+    setError(null); // Clear any previous errors
+
     if (username === "" || password === "") {
       setError("Please enter username and password");
       return;
@@ -43,6 +47,7 @@ export default function RegisterScreen({ navigation }) {
         title="Back to Login"
         onPress={() => navigation.navigate("Login")}
       />
+      {error && <Text style={styles.errorText}>{error}</Text>}{" "}
     </View>
   );
 }
@@ -59,5 +64,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     padding: 8,
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 12,
   },
 });

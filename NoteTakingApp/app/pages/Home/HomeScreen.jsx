@@ -3,17 +3,16 @@ import {
   View,
   Text,
   TextInput,
-  Button,
+  TouchableOpacity,
   FlatList,
   Alert,
   StyleSheet,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getTodos, addTodo } from "../../api.js";
 import { STATUS } from "../../constant.js";
 import Note from "./components/Note.jsx";
 
-export default memo(function HomeScreen({ fontSize }) {
+const HomeScreen = memo(({ fontSize }) => {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -29,7 +28,7 @@ export default memo(function HomeScreen({ fontSize }) {
       console.error("Error fetching todos:", error);
       Alert.alert("Error", "Failed to fetch todos");
     }
-  }, [getTodos]);
+  }, []);
 
   useEffect(() => {
     fetchTodos();
@@ -43,12 +42,10 @@ export default memo(function HomeScreen({ fontSize }) {
       }
       if (response.message === "Todo created successfully") {
         Alert.alert("Success", "Todo created successfully");
-        setTodos((prev) => {
-          return [
-            ...prev,
-            { title, description, id: response.result.insertId },
-          ];
-        });
+        setTodos((prev) => [
+          ...prev,
+          { title, description, id: response.result.insertId },
+        ]);
         setTitle("");
         setDescription("");
       } else {
@@ -58,15 +55,16 @@ export default memo(function HomeScreen({ fontSize }) {
       console.error("Error creating todo:", error);
       Alert.alert("Error", "Failed to create todo");
     }
-  }, [title, description, addTodo]);
+  }, [title, description]);
 
-  const renderItem = useCallback(({ item }) => {
-    return <Note item={item} setTodos={setTodos} />;
-  }, []);
+  const renderItem = useCallback(
+    ({ item }) => {
+      return <Note item={item} setTodos={setTodos} fontSize={fontSize} />;
+    },
+    [setTodos, fontSize]
+  );
 
-  const keyExtractor = useCallback((item) => {
-    return item.id;
-  }, []);
+  const keyExtractor = useCallback((item) => item.id.toString(), []);
 
   const getFontSizeStyle = () => {
     switch (fontSize) {
@@ -101,7 +99,9 @@ export default memo(function HomeScreen({ fontSize }) {
           onChangeText={setDescription}
           style={[styles.textInput, getFontSizeStyle()]}
         />
-        <Button title="Add Note" onPress={handleAddTodo} color="#007bff" />
+        <TouchableOpacity onPress={handleAddTodo} style={styles.button}>
+          <Text style={[styles.buttonText, getFontSizeStyle()]}>Add Note</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -111,15 +111,37 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "#f8f9fa" },
   title: { fontSize: 28, marginBottom: 16, fontWeight: "bold", color: "#333" },
   listContainer: { flexGrow: 1 },
-  inputContainer: { marginBottom: 16 },
+  inputContainer: {
+    padding: 16,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 2,
+    marginBottom: 16,
+  },
   textInput: {
     borderWidth: 1,
     marginBottom: 8,
-    padding: 8,
-    borderRadius: 4,
+    padding: 12,
+    borderRadius: 5,
     borderColor: "#ccc",
+  },
+  button: {
+    backgroundColor: "tomato",
+    padding: 12,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   smallFont: { fontSize: 16 },
   mediumFont: { fontSize: 18 },
   largeFont: { fontSize: 20 },
 });
+
+export default HomeScreen;

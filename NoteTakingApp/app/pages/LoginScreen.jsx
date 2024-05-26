@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import {
-  Alert,
-  Button,
   Image,
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   View,
@@ -36,23 +33,6 @@ function LoginScreen({ navigation }) {
     }
   };
 
-  // const handleRegister = async () => {
-  //   if (username === "" || password === "") {
-  //     setError("Please enter username and password");
-  //     return;
-  //   }
-  //   try {
-  //     const response = await registerUser(username, password);
-  //     if (response.success) {
-  //       Alert.alert("Registration Successful!");
-  //     } else {
-  //       setError(response.message);
-  //     }
-  //   } catch (error) {
-  //     setError(error.message);
-  //   }
-  // };
-
   return (
     <SafeAreaView style={styles.container}>
       <Image source={logo} style={styles.image} resizeMode="contain" />
@@ -60,7 +40,7 @@ function LoginScreen({ navigation }) {
       <View style={styles.inputView}>
         <TextInput
           style={styles.input}
-          placeholder="EMAIL OR USERNAME"
+          placeholder="Email or Username"
           value={username}
           onChangeText={setUsername}
           autoCorrect={false}
@@ -68,126 +48,87 @@ function LoginScreen({ navigation }) {
         />
         <TextInput
           style={styles.input}
-          placeholder="PASSWORD"
+          placeholder="Password"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
           autoCorrect={false}
           autoCapitalize="none"
         />
-      </View>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <View style={styles.buttonView}>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <Pressable style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>LOGIN</Text>
+          <Text style={styles.buttonText}>Login</Text>
         </Pressable>
+        <Text style={styles.footerText}>
+          Don't have an account?{" "}
+          <Text
+            style={styles.signup}
+            onPress={() => navigation.navigate("Register")}
+          >
+            Sign Up
+          </Text>
+        </Text>
       </View>
-
-      <Text style={styles.footerText}>
-        Don't Have Account?
-        <Pressable onPress={() => navigation.navigate("Register")}>
-          <Text style={styles.signup}> Sign Up</Text>
-        </Pressable>
-      </Text>
     </SafeAreaView>
   );
 }
 
-export default LoginScreen;
-
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center",
-    paddingTop: 70,
+    justifyContent: "center",
+    backgroundColor: "#fff",
   },
   image: {
     height: 160,
     width: 170,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: "bold",
-    textTransform: "uppercase",
+    marginBottom: 20,
+    color: "#333",
     textAlign: "center",
-    paddingVertical: 40,
-    color: "red",
   },
   inputView: {
-    gap: 15,
-    width: "100%",
-    paddingHorizontal: 40,
-    marginBottom: 5,
+    width: "80%",
   },
   input: {
     height: 50,
     paddingHorizontal: 20,
-    borderColor: "red",
+    marginBottom: 20,
+    borderColor: "#ccc",
     borderWidth: 1,
-    borderRadius: 7,
+    borderRadius: 10,
   },
-  rememberView: {
-    width: "100%",
-    paddingHorizontal: 50,
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexDirection: "row",
-    marginBottom: 8,
-  },
-  switch: {
-    flexDirection: "row",
-    gap: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  rememberText: {
-    fontSize: 13,
-  },
-  forgetText: {
-    fontSize: 11,
+  errorText: {
     color: "red",
+    marginBottom: 10,
+    textAlign: "center",
   },
   button: {
-    backgroundColor: "red",
-    height: 45,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 5,
+    backgroundColor: "#007bff",
+    height: 50,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
   buttonText: {
-    color: "white",
+    color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
   },
-  buttonView: {
-    width: "100%",
-    paddingHorizontal: 50,
-  },
-  optionsText: {
-    textAlign: "center",
-    paddingVertical: 10,
-    color: "gray",
-    fontSize: 13,
-    marginBottom: 6,
-  },
-  mediaIcons: {
-    flexDirection: "row",
-    gap: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 23,
-  },
-  icons: {
-    width: 40,
-    height: 40,
-  },
   footerText: {
+    marginTop: 20,
     textAlign: "center",
-    color: "gray",
+    color: "#666",
   },
   signup: {
     color: "red",
-    fontSize: 13,
+    fontWeight: "bold",
   },
 });
+
+export default LoginScreen;
