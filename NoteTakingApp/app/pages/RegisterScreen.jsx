@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, StyleSheet } from "react-native";
 
-export default function SignupScreen({ navigation }) {
+export default function RegisterScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -10,6 +10,7 @@ export default function SignupScreen({ navigation }) {
       setError("Please enter username and password");
       return;
     }
+
     try {
       const response = await registerUser(username, password);
       if (response.success) {

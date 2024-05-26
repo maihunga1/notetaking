@@ -8,11 +8,12 @@ import {
   Alert,
   StyleSheet,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getTodos, addTodo } from "../../api.js";
 import { STATUS } from "../../constant.js";
 import Note from "./components/Note.jsx";
 
-export default memo(function Home() {
+export default memo(function HomeScreen({ fontSize }) {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -60,40 +61,65 @@ export default memo(function Home() {
   }, [title, description, addTodo]);
 
   const renderItem = useCallback(({ item }) => {
-    return <Note item={item} setTodos={setTodos}/>;
+    return <Note item={item} setTodos={setTodos} />;
   }, []);
 
   const keyExtractor = useCallback((item) => {
     return item.id;
   }, []);
 
+  const getFontSizeStyle = () => {
+    switch (fontSize) {
+      case "small":
+        return styles.smallFont;
+      case "large":
+        return styles.largeFont;
+      default:
+        return styles.mediumFont;
+    }
+  };
+
   return (
-    <View style={style.container}>
-      <Text style={style.title}>Notes</Text>
+    <View style={styles.container}>
+      <Text style={[styles.title, getFontSizeStyle()]}>Notes</Text>
       <FlatList
         data={todos}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
+        contentContainerStyle={styles.listContainer}
       />
-      <TextInput
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
-        style={style.textInput}
-      />
-      <TextInput
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        style={style.textInput}
-      />
-      <Button title="Add Note" onPress={handleAddTodo} />
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Title"
+          value={title}
+          onChangeText={setTitle}
+          style={[styles.textInput, getFontSizeStyle()]}
+        />
+        <TextInput
+          placeholder="Description"
+          value={description}
+          onChangeText={setDescription}
+          style={[styles.textInput, getFontSizeStyle()]}
+        />
+        <Button title="Add Note" onPress={handleAddTodo} color="#007bff" />
+      </View>
     </View>
   );
 });
 
-const style = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 24, marginBottom: 16 },
-  textInput: { borderWidth: 1, marginBottom: 8, padding: 8 },
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16, backgroundColor: "#f8f9fa" },
+  title: { fontSize: 28, marginBottom: 16, fontWeight: "bold", color: "#333" },
+  listContainer: { flexGrow: 1 },
+  inputContainer: { marginBottom: 16 },
+  textInput: {
+    borderWidth: 1,
+    marginBottom: 8,
+    padding: 8,
+    borderRadius: 4,
+    borderColor: "#ccc",
+  },
+  smallFont: { fontSize: 16 },
+  mediumFont: { fontSize: 18 },
+  largeFont: { fontSize: 20 },
 });

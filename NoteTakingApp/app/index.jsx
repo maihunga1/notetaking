@@ -1,70 +1,92 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import SplashScreen from "./pages/SplashScreen.jsx";
-import Login from "./pages/Login.jsx";
-import SignupScreen from "./pages/RegisterScreen.jsx";
-import Home from "./pages/Home/Home.jsx";
-// import AboutScreen from "./About";
-// import SettingsScreen from "./Settings";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import {
+  LoginScreen,
+  RegisterScreen,
+  SplashScreen,
+  HomeScreen,
+  AboutScreen,
+  SettingScreen,
+} from "./pages";
 
 const Stack = createStackNavigator();
+const BottomTab = createBottomTabNavigator();
+
+const BottomTabNavigator = () => (
+  <BottomTab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        switch (route.name) {
+          case "Home":
+            iconName = focused ? "home" : "home-outline";
+            break;
+          case "About":
+            iconName = focused
+              ? "information-circle"
+              : "information-circle-outline";
+            break;
+          case "Settings":
+            iconName = focused ? "settings" : "settings-outline";
+            break;
+          default:
+            break;
+        }
+
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+    })}
+    tabBarOptions={{
+      activeTintColor: "tomato",
+      inactiveTintColor: "gray",
+    }}
+  >
+    <BottomTab.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{ headerShown: false }}
+    />
+    <BottomTab.Screen
+      name="About"
+      component={AboutScreen}
+      options={{ headerShown: false }}
+    />
+    <BottomTab.Screen
+      name="Settings"
+      component={SettingScreen}
+      options={{ headerShown: false }}
+    />
+  </BottomTab.Navigator>
+);
+
+const RootNavigator = () => (
+  <Stack.Navigator initialRouteName="Login">
+    <Stack.Screen
+      name="Login"
+      component={LoginScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Register"
+      component={RegisterScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="BottomTab"
+      component={BottomTabNavigator}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
 
 export default function Index() {
   return (
     <NavigationContainer independent={true}>
-      <Stack.Navigator initialRouteName="Splash">
-        <Stack.Screen
-          name="Splash"
-          component={SplashScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signup" component={SignupScreen} />
-        <Stack.Screen name="Home" component={Home} />
-        {/* <Stack.Screen name="About" component={AboutScreen} /> */}
-        {/* <Stack.Screen name="Settings" component={SettingsScreen} /> */}
-      </Stack.Navigator>
+      <RootNavigator />
     </NavigationContainer>
   );
 }
-
-// const Index = () => {
-//   const [appIsReady, setAppIsReady] = useState(false);
-//   const navigation = useNavigation();
-
-//   useEffect(() => {
-//     async function prepare() {
-//       try {
-//         // Your app initialization code here
-//       } catch (e) {
-//         console.warn(e);
-//       } finally {
-//         setAppIsReady(true);
-//       }
-//     }
-
-//     prepare();
-//   }, []);
-
-//   useEffect(() => {
-//     if (appIsReady) {
-//       navigation.navigate("login");
-//     }
-//   }, [appIsReady]);
-
-//   return (
-//     <View
-//       style={{
-//         flex: 1,
-//         alignItems: "center",
-//         justifyContent: "center",
-//         width: "100%",
-//       }}
-//     >
-//       <Text>Loading...</Text>
-//     </View>
-//   );
-// };
-
-// export default Index;

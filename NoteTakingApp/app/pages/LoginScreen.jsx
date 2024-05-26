@@ -14,7 +14,7 @@ import {
 import { loginUser, registerUser } from "../api.js";
 import logo from "../../assets/images/logo.png";
 
-function Login({ navigation }) {
+function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -27,7 +27,7 @@ function Login({ navigation }) {
     try {
       const response = await loginUser(username, password);
       if (response.status === "Success") {
-        navigation.navigate("Home");
+        navigation.navigate("BottomTab");
       } else {
         setError(response.message);
       }
@@ -85,7 +85,7 @@ function Login({ navigation }) {
 
       <Text style={styles.footerText}>
         Don't Have Account?
-        <Pressable onPress={() => navigation.navigate("Signup")}>
+        <Pressable onPress={() => navigation.navigate("Register")}>
           <Text style={styles.signup}> Sign Up</Text>
         </Pressable>
       </Text>
@@ -93,7 +93,7 @@ function Login({ navigation }) {
   );
 }
 
-export default Login;
+export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {

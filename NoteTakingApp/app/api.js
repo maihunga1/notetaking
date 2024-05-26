@@ -8,6 +8,7 @@ export const loginUser = async (username, password) => {
     },
     body: JSON.stringify({ username, password }),
   });
+  
   return await response.json();
 };
 
@@ -19,6 +20,7 @@ export const registerUser = async (username, password) => {
     },
     body: JSON.stringify({ username, password }),
   });
+
   return await response.json();
 };
 
@@ -27,6 +29,7 @@ export const getTodos = async () => {
   if (!response.ok) {
     throw new Error("Failed to fetch todos");
   }
+
   return await response.json();
 };
 
@@ -42,6 +45,7 @@ export const addTodo = async (title, description) => {
   if (!response.ok) {
     throw new Error("Failed to create todo");
   }
+
   return await response.json();
 };
 
@@ -57,6 +61,7 @@ export const editTodo = async (id, title, description) => {
   if (!response.ok) {
     throw new Error("Failed to edit todo");
   }
+
   return await response.json();
 };
 
@@ -72,8 +77,6 @@ export const deleteTodo = async (id, title, description) => {
   if (!response.ok) {
     throw new Error("Failed to delete todo");
   }
-
-  console.log(response)
 
   return await response.json();
 };

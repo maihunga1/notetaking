@@ -2,7 +2,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
   Pressable,
   Modal,
   TextInput,
@@ -11,16 +10,8 @@ import { memo, useCallback, useState } from "react";
 import { editTodo, deleteTodo } from "../../../api";
 import { STATUS } from "../../../constant";
 
-// export default memo(function Note({ item }) {
-//   const onPressEditTodo = useCallback(async () => {
-//     const { id, title, description } = item;
-
-//     const result = await editTodo(id, title, description);
-//   }, []);
-
 export default memo(function Note({ setTodos, item }) {
   const [modalOpen, setModalOpen] = useState(false);
-
   const [title, setTitle] = useState(item.title);
   const [description, setDescription] = useState(item.description);
 
