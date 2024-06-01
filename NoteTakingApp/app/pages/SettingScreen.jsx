@@ -1,9 +1,16 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useCallback } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Appearance,
+  Button,
+  useColorScheme,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-const SettingsScreen = ({ fontSize, setFontSize }) => {
-  const getFontSizeStyle = () => {
+export default function SettingsScreen({ fontSize, setFontSize }) {
+  const getFontSizeStyle = useCallback(() => {
     switch (fontSize) {
       case "small":
         return styles.smallFont;
@@ -12,7 +19,7 @@ const SettingsScreen = ({ fontSize, setFontSize }) => {
       default:
         return styles.mediumFont;
     }
-  };
+  }, [fontSize, styles]);
 
   return (
     <View style={styles.container}>
@@ -22,7 +29,7 @@ const SettingsScreen = ({ fontSize, setFontSize }) => {
         <Picker
           selectedValue={fontSize}
           onValueChange={(itemValue) => setFontSize(itemValue)}
-          style={styles.picker}
+          style={[styles.picker]}
           itemStyle={styles.pickerItem}
         >
           <Picker.Item label="Small" value="small" />
@@ -35,7 +42,7 @@ const SettingsScreen = ({ fontSize, setFontSize }) => {
       </Text>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -82,5 +89,3 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-
-export default SettingsScreen;

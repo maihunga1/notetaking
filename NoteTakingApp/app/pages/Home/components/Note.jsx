@@ -7,6 +7,7 @@ import {
   Modal,
   TextInput,
   TouchableOpacity,
+  useColorScheme,
 } from "react-native";
 import { editTodo, deleteTodo } from "../../../api";
 import { STATUS } from "../../../constant";

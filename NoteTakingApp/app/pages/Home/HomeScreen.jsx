@@ -7,6 +7,7 @@ import {
   FlatList,
   Alert,
   StyleSheet,
+  useColorScheme,
 } from "react-native";
 import { getTodos, addTodo } from "../../api.js";
 import { STATUS } from "../../constant.js";

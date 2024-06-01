@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  useColorScheme,
+} from "react-native";
 import licenses from "../../licenses.json";
 
 export default function AboutScreen({ fontSize }) {
