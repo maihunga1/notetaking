@@ -47,7 +47,7 @@ export default function RegisterScreen({ navigation }) {
         title="Back to Login"
         onPress={() => navigation.navigate("Login")}
       />
-      {error && <Text style={styles.errorText}>{error}</Text>}{" "}
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 }

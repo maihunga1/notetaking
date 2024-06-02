@@ -2,6 +2,8 @@ import express from "express";
 import { createConnection } from "mysql";
 import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
 const STATUS = {
   ERROR: "Error",
@@ -18,10 +20,10 @@ app.use(
 );
 
 const db = createConnection({
-  host: "127.0.0.1",
-  user: "root",
-  password: "convit12345",
-  database: "ifn666_final",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
 });
 
 // Connect to database
@@ -112,6 +114,21 @@ app.get("/todos", (req, res) => {
   });
 });
 
+// GET a single todo by id
+app.get("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  db.query("SELECT * FROM todos WHERE id = ?", [id], (err, results) => {
+    if (err) {
+      console.error("error running query:", err);
+      res.status(500).send({ message: "Error fetching todo" });
+    } else if (results.length === 0) {
+      res.status(404).send({ message: "Todo not found" });
+    } else {
+      res.send(results[0]);
+    }
+  });
+});
+
 // POST a new todo
 app.post("/todos", (req, res) => {
   const { title, description } = req.body;
@@ -135,21 +152,6 @@ app.post("/todos", (req, res) => {
   );
 });
 
-// GET a single todo by id
-app.get("/todos/:id", (req, res) => {
-  const id = req.params.id;
-  db.query("SELECT * FROM todos WHERE id = ?", [id], (err, results) => {
-    if (err) {
-      console.error("error running query:", err);
-      res.status(500).send({ message: "Error fetching todo" });
-    } else if (results.length === 0) {
-      res.status(404).send({ message: "Todo not found" });
-    } else {
-      res.send(results[0]);
-    }
-  });
-});
-
 // UPDATE a todo
 app.put("/todos/:id", (req, res) => {
   const id = req.params.id;
@@ -162,7 +164,11 @@ app.put("/todos/:id", (req, res) => {
         console.error("error running query:", err);
         res.status(500).send({ message: "Error updating todo" });
       } else {
-        res.send({ message: "Todo updated successfully", results, status: STATUS.SUCCESS });
+        res.send({
+          message: "Todo updated successfully",
+          results,
+          status: STATUS.SUCCESS,
+        });
       }
     }
   );
@@ -176,7 +182,11 @@ app.delete("/todos/:id", (req, res) => {
       console.error("error running query:", err);
       res.status(500).send({ message: "Error deleting todo" });
     } else {
-      res.send({ message: "Todo deleted successfully", results, status: STATUS.SUCCESS });
+      res.send({
+        message: "Todo deleted successfully",
+        results,
+        status: STATUS.SUCCESS,
+      });
     }
   });
 });
